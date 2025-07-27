@@ -84,34 +84,38 @@ end
 
 --- @class StatusOr
 StatusOr = {
-  --- @param self StatusOr
   --- @param status_or_value Status | any
-  StatusOr = function (self, status_or_value)
+  init = function (status_or_value)
+    local self = setmetatable({}, StatusOr)
+
+    -- TODO: check for "Status" type instead
     if type(status_or_value) == "table" and (not status_or_value.ok or
-                                             not status_or_value.ok()) then
+                                             not status_or_value:ok()) then
+      -- Error case: Save the Status object.
       self._status = status_or_value
       self._value = nil
     else
       self._status = OkStatus()
       self._value = status_or_value
     end
+
+    return self
   end,
 
-  --- @return boolean
-  ok = function (self)
-    return self._status and self._status.ok() or false
-  end,
+  __index = {
+    --- @return boolean
+    ok = function (self)
+      return self._status and self._status:ok() or false
+    end,
 
-  --- @return Status | nil
-  status = function (self)
-    return self._status
-  end,
+    --- @return Status | nil
+    status = function (self)
+      return self._status
+    end,
 
-  --- @return any | nil
-  value = function (self)
-    return self._value
-  end,
-
-  _status = nil,  --- @type Status
-  _value = nil,  --- @type any
+    --- @return any | nil
+    value = function (self)
+      return self._value
+    end,
+  },
 }

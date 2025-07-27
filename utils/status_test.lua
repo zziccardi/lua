@@ -45,7 +45,19 @@ local tests = {
     assert(status:message() == "Invalid argument.")
   end,
 
-  -- TODO(zziccardi): Add more tests for StatusOr and other utilities.
+  test_status_or_with_not_ok_status = function ()
+    local status_or = StatusOr.init(InvalidArgumentError())
+    assert(not status_or:ok())
+    assert(status_or:status():code() == StatusCode.INVALID_ARGUMENT)
+    assert(status_or:value() == nil, "Expected value to be nil for error status.")
+  end,
+
+  test_status_or_with_value = function ()
+    local status_or = StatusOr.init("foo")
+    assert(status_or:ok())
+    assert(status_or:status():code() == StatusCode.OK)
+    assert(status_or:value() == "foo")
+  end,
 }
 
 for name, test in pairs(tests) do
