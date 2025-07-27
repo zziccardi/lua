@@ -27,9 +27,12 @@ function StatusCodeToString(code)
 end
 
 --- @class Status
+--- @field ok function
+--- @field code function
+--- @field message function
 Status = {
   --- @param code integer (of type StatusCode)
-  --- @param message string (only used for error cases)
+  --- @param message string? (only used for error cases)
   init = function (code, message)
     local self = setmetatable({}, Status)
 
@@ -40,7 +43,7 @@ Status = {
     end
 
     self._code = code
-    self._message = message
+    self._message = message or ""
 
     return self
   end,
@@ -66,20 +69,17 @@ Status = {
     return "Status(\n  code=" .. StatusCodeToString(self._code) ..
            ",\n  message=" .. tostring(self._message) .. ")"
   end,
-
-  _code = StatusCode.OK,
-  _message = "",
 }
 
 --- @return Status
 function OkStatus()
-  return Status(StatusCode.OK)
+  return Status.init(StatusCode.OK)
 end
 
---- @param message string
+--- @param message string?
 --- @return Status
 function InvalidArgumentError(message)
-  return Status(StatusCode.INVALID_ARGUMENT, message or "Invalid argument.")
+  return Status.init(StatusCode.INVALID_ARGUMENT, message or "Invalid argument.")
 end
 
 --- @class StatusOr

@@ -31,6 +31,20 @@ local tests = {
            "\nExpected:\n" .. expected)
   end,
 
+  test_ok_status = function ()
+    local status = OkStatus()
+    assert(status:ok(), "Expected status to be ok.")
+    assert(status:code() == StatusCode.OK)
+    assert(status:message() == "")
+  end,
+
+  test_invalid_argument_error = function ()
+    local status = InvalidArgumentError()
+    assert(not status:ok(), "Expected status to not be ok for invalid argument.")
+    assert(status:code() == StatusCode.INVALID_ARGUMENT)
+    assert(status:message() == "Invalid argument.")
+  end,
+
   -- TODO(zziccardi): Add more tests for StatusOr and other utilities.
 }
 
