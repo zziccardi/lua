@@ -83,6 +83,9 @@ function InvalidArgumentError(message)
 end
 
 --- @class StatusOr
+--- @field ok function
+--- @field status function
+--- @field value function
 StatusOr = {
   --- @param status_or_value Status | any
   init = function (status_or_value)
