@@ -28,36 +28,43 @@ end
 
 --- @class Status
 Status = {
-  --- @param self Status
   --- @param code integer (of type StatusCode)
   --- @param message string (only used for error cases)
-  Status = function (self, code, message)
-    if type(code) ~= "number" or code < 1 or code > #StatusCode then
+  init = function (code, message)
+    local self = setmetatable({}, Status)
+
+    if type(code) ~= "number" or code < 1 or code > 5 then
       self._code = StatusCode.OUT_OF_RANGE
       self._message = "Invalid status code: " .. tostring(code)
+      return self
     end
+
     self._code = code
     self._message = message
+
+    return self
   end,
 
-  --- @return boolean
-  ok = function (self)
-    return self._code == StatusCode.OK
-  end,
+  __index = {
+    --- @return boolean
+    ok = function (self)
+      return self._code == StatusCode.OK
+    end,
 
-  --- @return number
-  code = function (self)
-    return self._code
-  end,
+    --- @return number
+    code = function (self)
+      return self._code
+    end,
 
-  --- @return string
-  message = function (self)
-    return self._message
-  end,
+    --- @return string
+    message = function (self)
+      return self._message
+    end,
+  },
 
   __tostring = function (self)
-    return "Status(\n\tcode=" .. StatusCodeToString(self._code) ..
-           ",\n\tmessage=" .. tostring(self._message) .. "\n)"
+    return "Status(\n  code=" .. StatusCodeToString(self._code) ..
+           ",\n  message=" .. tostring(self._message) .. ")"
   end,
 
   _code = StatusCode.OK,
