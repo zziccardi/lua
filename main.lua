@@ -18,7 +18,7 @@ local adder = {}
 
 --- @param a number The first number to add.
 --- @param b number The second number to add.
---- @return StatusOr
+--- @return StatusOr (number)
 function adder.add(a, b)
   if type(a) ~= "number" or type(b) ~= "number" then
     return StatusOr(InvalidArgumentError("Both arguments must be numbers."))

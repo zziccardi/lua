@@ -9,13 +9,30 @@ StatusCode = {
   OUT_OF_RANGE = 5,
 }
 
+--- @param code integer (of type StatusCode)
+--- @return string (empty string if code is invalid)
+function StatusCodeToString(code)
+  if code == StatusCode.OK then
+    return "OK"
+  elseif code == StatusCode.UNKNOWN then
+    return "UNKNOWN"
+  elseif code == StatusCode.INVALID_ARGUMENT then
+    return "INVALID_ARGUMENT"
+  elseif code == StatusCode.FAILED_PRECONDITION then
+    return "FAILED_PRECONDITION"
+  elseif code == StatusCode.OUT_OF_RANGE then
+    return "OUT_OF_RANGE"
+  end
+  return ""
+end
+
 --- @class Status
 Status = {
   --- @param self Status
   --- @param code integer (of type StatusCode)
   --- @param message string (only used for error cases)
   Status = function (self, code, message)
-    if type(code) ~= "number" or code < 1 or code > 5 then
+    if type(code) ~= "number" or code < 1 or code > #StatusCode then
       self._code = StatusCode.OUT_OF_RANGE
       self._message = "Invalid status code: " .. tostring(code)
     end
@@ -39,8 +56,8 @@ Status = {
   end,
 
   __tostring = function (self)
-    return "Status(\n\tcode=" .. tostring(self._code) ..
-           ",\tmessage=" .. tostring(self._message) .. "\n)"
+    return "Status(\n\tcode=" .. StatusCodeToString(self._code) ..
+           ",\n\tmessage=" .. tostring(self._message) .. "\n)"
   end,
 
   _code = StatusCode.OK,
@@ -55,7 +72,7 @@ end
 --- @param message string
 --- @return Status
 function InvalidArgumentError(message)
-  return Status(StatusCode.INVALID_ARGUMENT, tostring(message) or "Invalid argument.")
+  return Status(StatusCode.INVALID_ARGUMENT, message or "Invalid argument.")
 end
 
 --- @class StatusOr
