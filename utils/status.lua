@@ -79,7 +79,8 @@ end
 --- @param message string?
 --- @return Status
 function InvalidArgumentError(message)
-  return Status.init(StatusCode.INVALID_ARGUMENT, message or "Invalid argument.")
+  return Status.init(StatusCode.INVALID_ARGUMENT,
+                     message or "Invalid argument.")
 end
 
 --- @class StatusOr

@@ -16,7 +16,8 @@ local adder = {}
 --- @return StatusOr (number)
 function adder.add(a, b)
   if type(a) ~= "number" or type(b) ~= "number" then
-    return StatusOr.init(InvalidArgumentError("Both arguments must be numbers."))
+    return StatusOr.init(InvalidArgumentError(
+                             "Both arguments must be numbers."))
   end
   return StatusOr.init(a + b)
 end
