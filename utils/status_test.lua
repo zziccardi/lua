@@ -49,6 +49,14 @@ local tests = {
     assert(status:message() == "Invalid argument.")
   end,
 
+  test_status_or_with_ok_status = function ()
+    local status_or = StatusOr.init(OkStatus())
+    assert(status_or:ok())
+    assert(status_or:status():code() == StatusCode.OK)
+    assert(status_or:value() == nil,
+           "Expected value to be nil for ok status.")
+  end,
+
   test_status_or_with_not_ok_status = function ()
     local status_or = StatusOr.init(InvalidArgumentError())
     assert(not status_or:ok())

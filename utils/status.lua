@@ -92,12 +92,15 @@ StatusOr = {
   init = function (status_or_value)
     local self = setmetatable({}, StatusOr)
 
-    -- TODO: check for "Status" type instead
-    if type(status_or_value) == "table" and (not status_or_value.ok or
-                                             not status_or_value:ok()) then
-      -- Error case: Save the Status object.
-      self._status = status_or_value
+    if getmetatable(status_or_value) == Status then
       self._value = nil
+
+      if status_or_value:ok() then
+        self._status = OkStatus()
+      else
+        -- Save the Status object.
+        self._status = status_or_value
+      end
     else
       self._status = OkStatus()
       self._value = status_or_value
