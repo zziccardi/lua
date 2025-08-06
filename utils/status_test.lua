@@ -1,90 +1,79 @@
 
-package.path = package.path .. ";/Users/zziccardi/Desktop/lua/utils/?.lua"
+-- package.path = package.path .. ";/Users/zziccardi/Desktop/lua/utils/?.lua"
 
 require("utils.status")
 
-local tests = {
-  test_status_code_to_string = function ()
-    assert(StatusCodeToString(0) == "",
-           "Expected empty string for invalid code.")
-    assert(StatusCodeToString(1) == "OK")
-  end,
+local lu = require("luaunit")
 
-  test_status_invalid_code = function ()
-    local status = Status.init(6, "Invalid code")
-    assert(not status:ok(), "Expected status to not be ok for invalid code.")
-    assert(status:code() == StatusCode.OUT_OF_RANGE)
-    assert(status:message() == "Invalid status code: 6")
-  end,
+local StatusTest = {}
 
-  test_status_valid_params = function ()
-    local status = Status.init(StatusCode.FAILED_PRECONDITION,
-                               "Precondition failed")
-    assert(not status:ok())
-    assert(status:code() == StatusCode.FAILED_PRECONDITION)
-    assert(status:message() == "Precondition failed")
-  end,
-
-  test_status_to_string = function ()
-    local status = Status.init(StatusCode.UNKNOWN, "An unknown error occurred")
-    local expected = "Status(code=UNKNOWN, message=An unknown error occurred)"
-    assert(tostring(status) == expected,
-           "The following does not match expected:\n" .. tostring(status) ..
-           "\nExpected:\n" .. expected)
-  end,
-
-  test_ok_status = function ()
-    local status = OkStatus()
-    assert(status:ok(), "Expected status to be ok.")
-    assert(status:code() == StatusCode.OK)
-    assert(status:message() == "")
-  end,
-
-  test_invalid_argument_error = function ()
-    local status = InvalidArgumentError()
-    assert(not status:ok(),
-           "Expected status to not be ok for invalid argument.")
-    assert(status:code() == StatusCode.INVALID_ARGUMENT)
-    assert(status:message() == "Invalid argument.")
-  end,
-
-  test_status_or_with_ok_status = function ()
-    local status_or = StatusOr.init(OkStatus())
-    assert(status_or:ok())
-    assert(status_or:status():code() == StatusCode.OK)
-    assert(status_or:value() == nil,
-           "Expected value to be nil for ok status.")
-  end,
-
-  test_status_or_with_not_ok_status = function ()
-    local status_or = StatusOr.init(InvalidArgumentError())
-    assert(not status_or:ok())
-    assert(status_or:status():code() == StatusCode.INVALID_ARGUMENT)
-    assert(status_or:value() == nil,
-           "Expected value to be nil for error status.")
-  end,
-
-  test_status_or_with_value = function ()
-    local status_or = StatusOr.init("foo")
-    assert(status_or:ok())
-    assert(status_or:status():code() == StatusCode.OK)
-    assert(status_or:value() == "foo")
-  end,
-
-  test_status_or_to_string = function ()
-    local status_or = StatusOr.init(InvalidArgumentError("Bad input"))
-    local expected =
-        "StatusOr(status=Status(code=INVALID_ARGUMENT, message=Bad input), "
-                  .. "value=nil)"
-    assert(tostring(status_or) == expected)
-  end,
-}
-
-for name, test in pairs(tests) do
-  local success, err = pcall(test)
-  if not success then
-    print("FAILED: " .. name .. "\n\t" .. tostring(err))
-  else
-    print("PASSED: " .. name)
-  end
+function StatusTest:test_status_code_to_string()
+  lu.assertEquals(StatusCodeToString(0), "")
+  lu.assertEquals(StatusCodeToString(1), "OK")
 end
+
+function StatusTest:test_status_invalid_code()
+  local status = Status.init(6, "Invalid code")
+  lu.assertFalse(status:ok())
+  lu.assertEquals(status:code(), StatusCode.OUT_OF_RANGE)
+  lu.assertEquals(status:message(), "Invalid status code: 6")
+end
+
+function StatusTest:test_status_valid_params()
+  local status = Status.init(StatusCode.FAILED_PRECONDITION,
+                             "Precondition failed")
+  lu.assertFalse(status:ok())
+  lu.assertEquals(status:code(), StatusCode.FAILED_PRECONDITION)
+  lu.assertEquals(status:message(), "Precondition failed")
+end
+
+function StatusTest:test_status_to_string()
+  local status = Status.init(StatusCode.UNKNOWN, "An unknown error occurred")
+  lu.assertEquals(tostring(status),
+                  "Status(code=UNKNOWN, message=An unknown error occurred)")
+end
+
+function StatusTest:test_ok_status()
+  local status = OkStatus()
+  lu.assertTrue(status:ok())
+  lu.assertEquals(status:code(), StatusCode.OK)
+  lu.assertEquals(status:message(), "")
+end
+
+function StatusTest:test_invalid_argument_error()
+  local status = InvalidArgumentError()
+  lu.assertFalse(status:ok())
+  lu.assertEquals(status:code(), StatusCode.INVALID_ARGUMENT)
+  lu.assertEquals(status:message(), "Invalid argument.")
+end
+
+function StatusTest:test_status_or_with_ok_status()
+  local status_or = StatusOr.init(OkStatus())
+  lu.assertTrue(status_or:ok())
+  lu.assertEquals(status_or:status():code(), StatusCode.OK)
+  lu.assertNil(status_or:value(), "Expected value to be nil for ok status.")
+end
+
+function StatusTest:test_status_or_with_not_ok_status()
+  local status_or = StatusOr.init(InvalidArgumentError())
+  lu.assertFalse(status_or:ok())
+  lu.assertEquals(status_or:status():code(), StatusCode.INVALID_ARGUMENT)
+  lu.assertNil(status_or:value(), "Expected value to be nil for error status.")
+end
+
+function StatusTest:test_status_or_with_value()
+  local status_or = StatusOr.init("foo")
+  lu.assertTrue(status_or:ok())
+  lu.assertEquals(status_or:status():code(), StatusCode.OK)
+  lu.assertEquals(status_or:value(), "foo")
+end
+
+function StatusTest:test_status_or_to_string()
+  local status_or = StatusOr.init(InvalidArgumentError("Bad input"))
+  local expected =
+      "StatusOr(status=Status(code=INVALID_ARGUMENT, message=Bad input), "
+                .. "value=nil)"
+  lu.assertEquals(tostring(status_or), expected)
+end
+
+os.exit(lu.LuaUnit.run())

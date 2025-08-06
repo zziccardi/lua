@@ -8,7 +8,10 @@ description = {
    homepage = "https://github.com/zziccardi/lua",
    license = "*** please specify a license ***"
 }
-dependencies = {}
+dependencies = {
+   "lua >= 5.4-1",
+}
+build_dependencies = {}
 build = {
    type = "builtin",
    modules = {
