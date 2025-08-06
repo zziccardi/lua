@@ -1,3 +1,4 @@
+rockspec_format = "3.1"
 package = "lua"
 version = "dev-1"
 source = {
@@ -7,12 +8,7 @@ description = {
    homepage = "https://github.com/zziccardi/lua",
    license = "*** please specify a license ***"
 }
-dependencies = {
-   queries = {}
-}
-build_dependencies = {
-   queries = {}
-}
+dependencies = {}
 build = {
    type = "builtin",
    modules = {
@@ -22,5 +18,9 @@ build = {
    }
 }
 test_dependencies = {
-   queries = {}
+   "luaunit >= 3.4-1"
+}
+test = {
+  type = "command",
+  script = "utils/status_test.lua"
 }

@@ -1,7 +1,7 @@
 
 package.path = package.path .. ";/Users/zziccardi/Desktop/lua/utils/?.lua"
 
-require("status")
+require("utils.status")
 
 local function print_hello(...)
   print("Hello, world!")

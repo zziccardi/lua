@@ -1,7 +1,7 @@
 
 package.path = package.path .. ";/Users/zziccardi/Desktop/lua/utils/?.lua"
 
-require("status")
+require("utils.status")
 
 local tests = {
   test_status_code_to_string = function ()
