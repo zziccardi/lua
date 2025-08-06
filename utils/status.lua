@@ -66,8 +66,8 @@ Status = {
   },
 
   __tostring = function (self)
-    return "Status(\n  code=" .. StatusCodeToString(self._code) ..
-           ",\n  message=" .. tostring(self._message) .. ")"
+    return "Status(code=" .. StatusCodeToString(self._code) ..
+           ", message=" .. tostring(self._message) .. ")"
   end,
 }
 
@@ -125,4 +125,9 @@ StatusOr = {
       return self._value
     end,
   },
+
+  __tostring = function (self)
+    return "StatusOr(status=" .. tostring(self._status) ..
+           ", value=" .. tostring(self._value) .. ")"
+  end,
 }

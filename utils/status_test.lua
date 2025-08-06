@@ -27,8 +27,7 @@ local tests = {
 
   test_status_to_string = function ()
     local status = Status.init(StatusCode.UNKNOWN, "An unknown error occurred")
-    local expected = "Status(\n  code=UNKNOWN," ..
-                     "\n  message=An unknown error occurred)"
+    local expected = "Status(code=UNKNOWN, message=An unknown error occurred)"
     assert(tostring(status) == expected,
            "The following does not match expected:\n" .. tostring(status) ..
            "\nExpected:\n" .. expected)
@@ -70,6 +69,14 @@ local tests = {
     assert(status_or:ok())
     assert(status_or:status():code() == StatusCode.OK)
     assert(status_or:value() == "foo")
+  end,
+
+  test_status_or_to_string = function ()
+    local status_or = StatusOr.init(InvalidArgumentError("Bad input"))
+    local expected =
+        "StatusOr(status=Status(code=INVALID_ARGUMENT, message=Bad input), "
+                  .. "value=nil)"
+    assert(tostring(status_or) == expected)
   end,
 }
 
